@@ -1,0 +1,12 @@
+{
+  "modules": [
+    {
+      "name": "taiwan_epa",
+      "url": "http://taqm.epa.gov.tw/taqm/aqs.ashx?lang=en&act=aqi-epa"
+    },
+    {
+      "name": "lass",
+      "url": "http://airmap.g0v.asper.tw/json/airmap.json"
+    }
+  ]
+}
