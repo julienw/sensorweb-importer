@@ -4,7 +4,7 @@
   "description": "Imports 3rd-party data into Sensorweb",
   "main": "index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "nyc mocha",
     "lint": "eslint src test"
   },
   "author": "",
@@ -22,6 +22,7 @@
     "eslint": "^3.14.0",
     "istanbul": "^0.4.5",
     "mocha": "^3.2.0",
-    "nock": "^9.0.2"
+    "nock": "^9.0.2",
+    "nyc": "^10.1.2"
   }
 }
