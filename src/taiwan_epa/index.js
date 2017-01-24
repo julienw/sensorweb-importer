@@ -22,7 +22,7 @@ TaiwanEpaImporter.prototype = {
             name: site.SiteName,
             // longitude first in SensorThings
             location: [site.lng, site.lat],
-            sensors: sensorNames.map(name => ({ name, data: site[name] })),
+            sensors: sensorNames.map(name => ({ name, value: site[name] })),
             timestamp: new Date(`${site.Time}+08:00`),
             rawSite: site,
           };

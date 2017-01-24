@@ -1,0 +1,3 @@
+--ui tdd
+--require co-mocha
+--timeout 10000

@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const { fetchError } = require('../errors');
+
 function LassDataImporter(config) {
   this.config = config;
 }
@@ -8,8 +10,12 @@ LassDataImporter.prototype = {
   fetch() {
     return fetch(this.config.url)
       .then(res => res.json())
-      .then(data =>
-        data.map(site => {
+      .then(data => {
+        if (!Array.isArray(data)) {
+          throw fetchError('The result should be an array.');
+        }
+
+        return data.map(site => {
           const thing = {
             id: site.SiteName,
             name: site.SiteName,
@@ -27,13 +33,13 @@ LassDataImporter.prototype = {
 
             thing.sensors.push({
               name: sensor,
-              data: site.Data[sensor],
+              value: site.Data[sensor],
             });
           }
 
           return thing;
-        })
-      );
+        });
+      });
   }
 };
 
