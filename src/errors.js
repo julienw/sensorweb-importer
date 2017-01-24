@@ -1,7 +1,8 @@
 
 function FetchError(message) {
-  Error.call(this, message);
+  this.message = message;
   this.name = 'FetchError';
+  Error.captureStackTrace(this);
 }
 
 FetchError.prototype = Object.create(Error.prototype);

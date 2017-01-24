@@ -1,6 +1,6 @@
 const fetch = require('node-fetch');
 
-const { fetchError } = require('../errors');
+const { fetchError, FetchError } = require('../errors');
 
 function LassDataImporter(config) {
   this.config = config;
@@ -39,6 +39,12 @@ LassDataImporter.prototype = {
 
           return thing;
         });
+      }).catch(e => {
+        if (e instanceof FetchError) {
+          throw e;
+        }
+
+        throw fetchError(`Error while fetching data: ${e.message}`);
       });
   }
 };

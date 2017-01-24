@@ -1,5 +1,7 @@
 const fetch = require('node-fetch');
 
+const { fetchError, FetchError } = require('../errors');
+
 const sensorNames =
   ['PM10', 'PM10_AVG', 'PM25', 'PM25_AVG', 'O3', 'O3_8', 'SO2', 'CO', 'NO2'];
 
@@ -13,7 +15,11 @@ TaiwanEpaImporter.prototype = {
       .then(res => res.json())
       .then(data => {
         if (data.Result !== 'ok') {
-          throw new Error(`Got a result "${data.Result}" while fetching data`);
+          throw fetchError(`Got a result "${data.Result}" while fetching data`);
+        }
+
+        if (!Array.isArray(data.Data)) {
+          throw fetchError('Data should be an array.');
         }
 
         return data.Data.map(site => {
@@ -22,13 +28,21 @@ TaiwanEpaImporter.prototype = {
             name: site.SiteName,
             // longitude first in SensorThings
             location: [site.lng, site.lat],
-            sensors: sensorNames.map(name => ({ name, value: site[name] })),
+            sensors: sensorNames
+              .filter(name => site[name] !== undefined)
+              .map(name => ({ name, value: site[name] })),
             timestamp: new Date(`${site.Time}+08:00`),
             rawSite: site,
           };
 
           return thing;
         });
+      }).catch(e => {
+        if (e instanceof FetchError) {
+          throw e;
+        }
+
+        throw fetchError(`Error while fetching data: ${e.message}`);
       });
   }
 };
