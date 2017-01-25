@@ -1,3 +1,5 @@
 --ui tdd
 --require co-mocha
+--require ./test/setup
 --timeout 10000
+--growl

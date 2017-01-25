@@ -1,3 +1,10 @@
 language: node_js
-scripts:
+addons:
+  postgresql: "9.4"
+before_script:
+  - psql -c 'drop database sensorwebtest;' -U postgres || true
+  - psql -c "create database sensorwebtest with owner $USER;" -U postgres
+  - psql -c 'create extension postgis;' -U postgres sensorwebtest
+script:
+  - npm test
   - npm run lint
