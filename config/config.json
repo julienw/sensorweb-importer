@@ -1,5 +1,5 @@
 {
-  "modules": [
+  "providers": [
     {
       "name": "taiwan_epa",
       "url": "http://taqm.epa.gov.tw/taqm/aqs.ashx?lang=en&act=aqi-epa"

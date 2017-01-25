@@ -36,7 +36,12 @@ const conf = convict({
     default: 'development',
     env: 'NODE_ENV',
   },
-  modules: {}
+  providers: {},
+  sensorthingsEndpoint: {
+    doc: `This is the URL at the root of the sensorthings REST, where /Things
+          is`,
+    default: 'http://localhost:8080/v1.0/',
+  }
 });
 
 conf.loadFile('./config/config.json');
