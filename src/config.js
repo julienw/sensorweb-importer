@@ -30,6 +30,11 @@ const conf = convict({
       default: '',
     }
   },
+  delay_ms: { // eslint-disable-line camelcase
+    doc: `Delay between retrievals. The delay is counted starting after the
+          previous request.`,
+    default: 15 * 60 * 1000 // default is 15 minutes
+  },
   env: {
     doc: 'The application environment.',
     format: ['production', 'development', 'test'],

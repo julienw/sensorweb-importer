@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "convict": "^2.0.0",
+    "debug": "^2.6.0",
     "node-fetch": "^1.6.3",
     "pg": "^6.1.2",
     "sequelize": "^3.30.0"
