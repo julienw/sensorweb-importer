@@ -1,4 +1,4 @@
-const db = require('../src/models/db');
+const db = require('../src/models');
 
 suite('db', function() {
   teardown(function() {

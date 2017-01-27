@@ -60,7 +60,7 @@ module.exports = function() {
     .filter(file =>
       (file.includes('.js') &&
         !file.startsWith('.') &&
-        file !== 'db.js')
+        file !== 'index.js')
     )
     .forEach(file => {
       const model = sequelize.import(path.join(__dirname, file));
