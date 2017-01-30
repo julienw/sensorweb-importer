@@ -19,7 +19,10 @@ SensorThingsClient.prototype = {
   },
 
   createLocation(thingId, location) {
-    return createInSensorThings(`${this.baseUrl}/Things(${thingId})`, location);
+    return createInSensorThings(
+      `${this.baseUrl}/Things(${thingId})/Locations`,
+      location
+    );
   },
 
   createThingWithLocation(thing, location) {

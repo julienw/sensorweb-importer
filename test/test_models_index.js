@@ -12,7 +12,8 @@ suite('db', function() {
 
   test('returns model objects', function*() {
     const models = yield db();
-    assert.property(models, 'ImporterMapping');
+    assert.property(models, 'ImporterMappingThing');
+    assert.property(models, 'ImporterMappingStream');
     assert.ok(models);
   });
 

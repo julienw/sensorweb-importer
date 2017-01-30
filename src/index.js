@@ -2,9 +2,8 @@ process.env.DEBUG_FD = 1; // debug() echoes to stdout instead of stderr
 
 const debug = require('debug')('sensorweb-importer:index');
 const config = require('./config');
-const sensorthingsClient =
-  require('./sensorthings_client')(config.get('sensorthingsEndpoint'));
 const schedule = require('./scheduler');
+const Sensorthings = require('./sensorthings');
 
 const providers = config.get('providers')
   .map(({ name, url }) => ({
@@ -17,11 +16,14 @@ function handleDataFrom(sourceName) {
   return (data) => {
     data.forEach(site => {
       const thing = {
-        name: site.name,
-        properties: {
-          owner: site.owner,
-          source: sourceName,
-        }
+        data: {
+          name: site.name,
+          properties: {
+            owner: site.owner,
+            source: sourceName,
+          },
+        },
+        key: site.id,
       };
 
       const location = {
@@ -58,16 +60,22 @@ function handleDataFrom(sourceName) {
         })
         .filter(({ value }) => !isNaN(value));
 
-      return Promise.all([
-        sensorthingsClient.createThingWithLocation(thing, location),
-        sensorthingsClient.createFeatureOfInterest(featureOfInterest)
-      ]).then(([ { thingId }, featureId ]) =>
+      return Sensorthings.Cache.createOrRetrieveThingAndFeature({
+        provider: sourceName,
+        thing,
+        location,
+        feature: featureOfInterest,
+      }).then(({ thingId, featureId }) =>
         Promise.all(observations.map(observation => {
           const { observedProperty, sensor, stream } = observation;
-          return sensorthingsClient.createFullDatastream(
-            thingId, observedProperty, sensor, stream
-          ).then(({ streamId }) =>
-            sensorthingsClient.createObservation(
+          return Sensorthings.Cache.createOrRetrieveDatastream({
+            provider: sourceName,
+            thingId,
+            observedProperty,
+            sensor,
+            stream
+          }).then(({ streamId }) =>
+            Sensorthings.Client.createObservation(
               streamId, featureId, observation
             )
           );
