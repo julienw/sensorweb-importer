@@ -178,5 +178,23 @@ suite('Sensorthings/Cache', function() {
       assert.notEqual(result2, result1);
       server.done();
     });
+
+    test('works fine with 2 simultaneous requests', function*() {
+      const provider = 'lass';
+      const thingId = 1;
+      const observedProperty = { name: 'property' };
+      const sensor = { name: 'sensor' };
+      const stream = { name: 'stream' };
+
+      const requestParameter =
+        { provider, thingId, observedProperty, sensor, stream };
+      const [ result1, result2 ] = yield Promise.all([
+        cache.createOrRetrieveDatastream(requestParameter),
+        cache.createOrRetrieveDatastream(requestParameter),
+      ]);
+
+      assert.equal(result2, result1);
+      server.done();
+    });
   });
 });

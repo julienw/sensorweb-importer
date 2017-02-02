@@ -4,6 +4,77 @@ const debug = require('debug')('sensorweb-importer:sensorthings/cache');
 const client = require('.').Client;
 const dao = require('./dao');
 
+const PromiseCache = (function() {
+  const thingCache = new Map();
+
+  const ThingCache = {
+    set({ provider, thingKey }, promise) {
+      let providerMap = thingCache.get(provider);
+      if (!providerMap) {
+        providerMap = new Map();
+        thingCache.set(provider, providerMap);
+      }
+
+      providerMap.set(thingKey, promise);
+      return providerMap;
+    },
+
+    get({ provider, thingKey }) {
+      const providerMap = thingCache.get(provider);
+      return providerMap && providerMap.get(thingKey);
+    },
+
+    delete({ provider, thingKey }) {
+      const providerMap = thingCache.get(provider);
+      if (!providerMap) {
+        return false;
+      }
+
+      /* Purposefully not deleting the thingCache entry even if providerMap is
+       * empty, as it's possible we'll want to use it again, and we'll have only
+       * very few of these objects over time. */
+      return providerMap.delete(thingKey);
+    }
+  };
+
+  const streamCache = new Map();
+
+  const StreamCache = {
+    set({ provider, thingKey }, promise) {
+      let providerMap = thingCache.get(provider);
+      if (!providerMap) {
+        providerMap = new Map();
+        thingCache.set(provider, providerMap);
+      }
+
+      providerMap.set(thingKey, promise);
+      return providerMap;
+    },
+
+    get({ provider, thingKey }) {
+      const providerMap = thingCache.get(provider);
+      return providerMap && providerMap.get(thingKey);
+    },
+
+    delete({ provider, thingKey }) {
+      const providerMap = thingCache.get(provider);
+      if (!providerMap) {
+        return false;
+      }
+
+      /* Purposefully not deleting the thingCache entry even if providerMap is
+       * empty, as it's possible we'll want to use it again, and we'll have only
+       * very few of these objects over time. */
+      return providerMap.delete(thingKey);
+    }
+  };
+
+  return {
+    Thing: ThingCache,
+    Stream: StreamCache,
+  }
+})();
+
 module.exports = {
   createOrRetrieveThingAndFeature({ provider, thing, location, feature }) {
     return co(function*() {
